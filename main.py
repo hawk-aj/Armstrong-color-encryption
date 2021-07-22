@@ -1,4 +1,4 @@
-'''a cascaded encrypter and decrypter based the reasearch paper .......'''
+'''a cascaded encrypter and decrypter based the reasearch paper included in the folder'''
 '''encryption of audio/video/text/image files is being performed using Armstrong numbers
 , unique used key and a user based color
 multithreading was also used to improve execution time'''
