@@ -13,6 +13,7 @@ How encryption and decryption of file is done
 The user provides a key using it a XOR value is generated and base value of 3 matrices is generated.
 The matrix is 16 * 16 matrix which has 256 elements and is used to store 1 byte of data.
 Now lets say the base values for 3 matrices is (24, 210, 231). Further the base values is incremented sequentially and in a cyclic manner to fill up the matrix elements, as follows:
+
   Matrix-1 : 24, 25, 26, ..., 255, 0, 1, 2, 3, ... 23
 
   Matrix-2 : 210, 211, 212, ..., 255, 0, 1, 2, 3, ... 209
