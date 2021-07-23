@@ -1,8 +1,9 @@
-A multi-level cryptography system based on an idea of using armstrong numbers and matrices for encryption/decryption (the research paper where the idea was originally presented is included in the folder).
+A multi-level cryptography system based on the idea of using armstrong numbers and matrices for encryption/decryption (the research paper where the idea was originally presented is included in the folder).
 
 The idea behind the system is that the user will provide a key based on which the file will get encrypted. The same key must be used to decrypt the file. During encryption and decryption original file is divided into multiple chunks and process of encryption/decryption is done simultaneously with the use of multithreading.
 
 File Processing:
+
 File processing takes place in two stages. 
 There are two classes in the program named FileProcessor and ChunkProcessor.
 FileProcessor class takes in the file and divides it into some chunks (8 in our case).
@@ -12,6 +13,7 @@ Each chunk gets processed byte by byte and gets stored in a target file, which i
 After merging and getting final encrypted/decrypted file, target files for each chunk created earlier is deleted using os.remove().
 
 Encryption/Decryption in detail:
+
 The user provides a key using which XOR values and base value of 3 matrices is generated.
 The matrix is 16 * 16 matrix which has 256 elements and is used to store 1 byte of data.
 
