@@ -14,6 +14,7 @@ After merging and getting final encrypted/decrypted file, target files for each 
 Encryption/Decryption in detail:
 The user provides a key using which XOR values and base value of 3 matrices is generated.
 The matrix is 16 * 16 matrix which has 256 elements and is used to store 1 byte of data.
+
 Consider the base values for 3 matrices to be (28, 212, 242). Further the base values is incremented sequentially and in a cyclic manner to fill up the matrix elements, as follows:
 
 Matrix-1 : 28, 29, 30, ..., 255, 0, 1, 2, 3, ... 27
@@ -26,3 +27,4 @@ During encryption, Data (byte) to be encrypted is split into 2 nibbles. The high
 During decryption, the encoded value which is unique is to be searched in the matrix and co-ordinates (row, col) of matching element are to be treated as the high nibble and lower nibble from which we get original data back.
 Moreover instead of creating an actual matrix, we simply use a mathematical formula to get values from the supposed matrix in constant time.
 Before the encryption and decryption we also take xor of original data with XOR value that we generated earlier from user key.
+
