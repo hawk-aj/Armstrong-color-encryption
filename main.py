@@ -17,9 +17,9 @@ class KeyGenerator:
 
         for k in user_remark:
             temp = ord(k)
-            if temp not in self.numerickey:
+            if (temp not in self.numerickey) and (len(self.numerickey)<KeyGenerator.KEY_LENGTH):
                 self.numerickey.append(temp)
-            sum += temp
+                sum += temp
 
         if(len(self.numerickey) < KeyGenerator.KEY_LENGTH):
             raise Exception('Weak Key')
