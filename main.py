@@ -7,8 +7,10 @@ import os
 import threading
 import abc
 
+import time
+
 class KeyGenerator:
-    ARMSTRONG_DIGITS = [1,5,3,7,0,3,7,1,4,0,7]
+    ARMSTRONG_DIGITS = (1, 5, 3, 7, 0, 3, 7, 1, 4, 0, 7)
     KEY_LENGTH = len(ARMSTRONG_DIGITS)
 
     def __init__(self, user_remark):
@@ -17,9 +19,9 @@ class KeyGenerator:
 
         for k in user_remark:
             temp = ord(k)
-            if temp not in self.numerickey:
+            if (temp not in self.numerickey) and (len(self.numerickey) < KeyGenerator.KEY_LENGTH):
                 self.numerickey.append(temp)
-            sum += temp
+                sum += temp
 
         if(len(self.numerickey) < KeyGenerator.KEY_LENGTH):
             raise Exception('Weak Key')
@@ -56,6 +58,7 @@ class Cryptography(abc.ABC):
         r = (sum(self.numericKey[:4]) + self.numericKey[-1]) % 256
         g = (sum(self.numericKey[4:8]) + self.numericKey[-1]) % 256
         b = (sum(self.numericKey[8:12]) + self.numericKey[-1]) % 256
+        #print(r,g,b)
         return r,g,b
 
     @abc.abstractmethod
@@ -65,12 +68,15 @@ class Cryptography(abc.ABC):
 class Encrypter(Cryptography):
     def __init__(self,user_remark):
         Cryptography.__init__(self,user_remark)
-
+        self.ii = 0
     def process(self,data):
         #level1
         data = data ^ self.numericKey[self.numerickey_index]
         self.numerickey_index = (self.numerickey_index + 1) % KeyGenerator.KEY_LENGTH
 
+        if(self.ii<15):
+            #print(self.numerickey_index,"ni numeric key",self.numericKey)
+            self.ii+=1
         #level2
         row , col = ByteManager.byte_to_nibbles(data)
 
@@ -82,6 +88,7 @@ class Encrypter(Cryptography):
 class Decrypter(Cryptography):
     def __init__(self, user_remark):
         Cryptography.__init__(self, user_remark)
+        self.i=0
 
     def process(self, encoded):
         #level2
@@ -95,6 +102,8 @@ class Decrypter(Cryptography):
         data = data ^ self.numericKey[self.numerickey_index]
         self.numerickey_index = (self.numerickey_index +1) % KeyGenerator.KEY_LENGTH
 
+        if(self.i==0):
+            self.i+=1
         return data
 
 
@@ -109,6 +118,8 @@ class ChunkProcessor:
 
         #a thread member of the class
         self.thrd = threading.Thread(target = self.process)
+        #print(threading.active_count())
+        #print(threading.enumerate())
         #activate the thread
         self.thrd.start()
 
@@ -117,6 +128,7 @@ class ChunkProcessor:
         src_handle = open(self.src_filename, 'rb')
         trgt_handle = open(self.trgt_filename, 'wb')
 
+        #print(self.objCrypto.numericKey)
         #ensure that chunk is read within the limits
         src_handle.seek(self.start_pos, 0)
         x = self.start_pos
@@ -154,6 +166,8 @@ class FileProcessor:
 
         #suspend this thread until chunk processors are done
         for cp in cps:
+            #print(threading.active_count())
+            #print(threading.enumerate())
             cp.thrd.join()
 
         #merge into the trgt_file_name
@@ -196,17 +210,29 @@ class FileProcessor:
 
 
 def main():
-    src_file = "Data/test.jpeg"
-    encrypted_file ="Data/Encrypted.jpeg"
-    final_file = 'Data/final.jpeg'
+    src_file = "C:/Users/aj240/Downloads/amethyst_21_stuff/Final_ComicStan.png"
+    encrypted_file ="Data/test-en.png"
+    final_file = 'Data/test-de.png'
 
-    user_key = 'blueandredandshit'
+    user_key = 'zqpenteryourkeyheretostartprocess'
 
-    fp1 = FileProcessor(src_file, encrypted_file, 'E', user_key)
+    start_time = time.time()
+
+    size_e = os.path.getsize(src_file)
+    print("size of the encrypted file ",size_e," in bytes")
+
+    fp1 = FileProcessor(src_file, encrypted_file, 'E', user_key)            #encryption
     fp1.process()
 
-    fp2 = FileProcessor(encrypted_file, final_file, 'D', user_key)
+    fp2 = FileProcessor(encrypted_file, final_file, 'D', user_key)          #decryption
     fp2.process()
+
+    size_ff = os.path.getsize(final_file)
+    print("size of the final file ", size_ff, "in bytes")
+
+    end_time = time.time()
+    print("time taken to run the code in seconds : ", end_time-start_time)
+
     print('File Decrypted Successfully')
 
 main()
